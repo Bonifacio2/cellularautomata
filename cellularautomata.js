@@ -22,6 +22,7 @@ function start(){
 	createInitialArray();
 		
 	drawGrid();
+	window.setInterval(nextGeneration, 1000);
 }
 
 function drawGrid(){
@@ -82,7 +83,25 @@ function paintGrid(){
 }
 
 
+function nextGeneration(){
+	var newGrid = new Array();
 
+	for (var columnIndex=0; columnIndex < columnCount; columnIndex++){
+		var newColumn = new Array();
+		for (var rowIndex=0; rowIndex < rowCount; rowIndex++){
+			if (rowIndex > 0 && grid[columnIndex][rowIndex - 1]){
+				newColumn[rowIndex] = true
+			} else {
+				newColumn[rowIndex] = false
+			}
+
+			newGrid[columnIndex] = newColumn;
+		}
+	}
+	grid = newGrid;
+
+	paintGrid();
+}
 
 
 
