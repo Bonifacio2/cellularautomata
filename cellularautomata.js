@@ -21,8 +21,8 @@ function start(){
 	
 	createInitialArray();
 		
-	drawGrid();
-	window.setInterval(nextGeneration, 1000);
+	//drawGrid();
+	//window.setInterval(nextGeneration, 1000);
 }
 
 function drawGrid(){
@@ -69,7 +69,7 @@ function createInitialArray(){
 
 function paintGrid(){
 	canvas.width = canvas.width;
-	drawGrid();
+	//drawGrid();
 	for (var i=0;i < columnCount;i++){
 		for (var j=0;j < rowCount;j++){
 			if (grid[i][j]){
@@ -85,13 +85,16 @@ function paintGrid(){
 
 function nextGeneration(){
 	var newGrid = new Array();
+	var rule = new Rule();
 
 	for (var columnIndex=0; columnIndex < columnCount; columnIndex++){
 		var newColumn = new Array();
 		for (var rowIndex=0; rowIndex < rowCount; rowIndex++){
-			if (rowIndex > 0 && grid[columnIndex][rowIndex - 1]){
+			var tile = new Tile(columnIndex, rowIndex);
+			if (tileMatchesRule(tile, rule)){
 				newColumn[rowIndex] = true
-			} else {
+			}
+			else {
 				newColumn[rowIndex] = false
 			}
 
@@ -103,7 +106,58 @@ function nextGeneration(){
 	paintGrid();
 }
 
+function Rule(){
+	this.pattern = [false, true, false, false, false, false, true, false];
+}
 
+
+function Tile(x, y){
+	this.x = x;
+	this.y = y;
+}
+
+function tileMatchesRule(tile, rule){
+	var tileNeighborhood = getNeighborhood(tile);
+
+	for (var i=0; i < rule.pattern.length; i ++){
+		if (rule.pattern[i] != tileNeighborhood[i]){
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function getNeighborhood(tile){
+	if (tile.x == 0 || tile.x >= columnCount - 1 || tile.y == 0 || tile.y >= rowCount - 1){
+		return [];
+	} else {
+		var neighborhood = new Array();
+		neighborhood.push(grid[tile.x - 1][tile.y - 1]);
+		neighborhood.push(grid[tile.x    ][tile.y - 1]);
+		neighborhood.push(grid[tile.x + 1][tile.y - 1]);
+		neighborhood.push(grid[tile.x - 1][tile.y    ]);
+		neighborhood.push(grid[tile.x + 1][tile.y    ]);
+		neighborhood.push(grid[tile.x - 1][tile.y + 1]);
+		neighborhood.push(grid[tile.x    ][tile.y + 1]);
+		neighborhood.push(grid[tile.x + 1][tile.y + 1]);
+		return neighborhood;
+	}
+}
+
+function randomGrid(){
+	grid = new Array();
+	for (var j=0;j < columnCount;j++){
+		var column = new Array();
+		for (var i=0;i < rowCount;i++){
+			column[i] = Math.random() > 0.5
+		}
+		grid[j] = column
+	}
+
+	paintGrid();
+
+}
 
 
 
