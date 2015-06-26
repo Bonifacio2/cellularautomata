@@ -22,7 +22,7 @@ function start(){
 	createInitialArray();
 		
 	//drawGrid();
-	//window.setInterval(nextGeneration, 1000);
+	window.setInterval(nextGeneration, 100);
 }
 
 function drawGrid(){
@@ -91,11 +91,19 @@ function nextGeneration(){
 		var newColumn = new Array();
 		for (var rowIndex=0; rowIndex < rowCount; rowIndex++){
 			var tile = new Tile(columnIndex, rowIndex);
-			if (tileMatchesRule(tile, rule)){
-				newColumn[rowIndex] = true
-			}
-			else {
+
+			var neighborCount = countNeighbors(tile);
+
+			if (grid[columnIndex][rowIndex] && (neighborCount > 2)){
 				newColumn[rowIndex] = false
+			} else if (grid[columnIndex][rowIndex] && (neighborCount == 2 || neighborCount == 3)) {
+				newColumn[rowIndex] = true
+			} else if (grid[columnIndex][rowIndex] &&(neighborCount > 3)){
+				newColumn[rowIndex] = false
+			} else if (!grid[columnIndex][rowIndex] && (neighborCount == 3)){
+				newColumn[rowIndex] = true
+			} else {
+				newColumn[rowIndex] = grid[columnIndex][rowIndex]
 			}
 
 			newGrid[columnIndex] = newColumn;
@@ -156,6 +164,19 @@ function randomGrid(){
 	}
 
 	paintGrid();
+
+}
+
+function countNeighbors(tile){
+	var aliveNeighbors = 0;
+	var neighborhood = getNeighborhood(tile);
+	for (var i=0; i < neighborhood.length; i++){
+		if (neighborhood[i]){
+			aliveNeighbors++;
+		}
+	}
+
+	return aliveNeighbors;
 
 }
 
