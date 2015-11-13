@@ -94,7 +94,7 @@ function nextGeneration(){
 
 			var neighborCount = countNeighbors(tile);
 
-			if (grid[columnIndex][rowIndex] && (neighborCount > 2)){
+			if (grid[columnIndex][rowIndex] && (neighborCount < 2)){
 				newColumn[rowIndex] = false
 			} else if (grid[columnIndex][rowIndex] && (neighborCount == 2 || neighborCount == 3)) {
 				newColumn[rowIndex] = true
